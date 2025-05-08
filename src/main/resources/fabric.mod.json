@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "webcam",
+	"version": "${version}",
+	"name": "Webcam",
+	"description": "Adds webcams to minecraft",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://www.youtube.com/@lichcodes"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/webcam/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.lichcode.webcam.WebcamMod"
+		],
+		"client": [
+			"com.lichcode.webcam.WebcamModClient"
+		]
+	},
+	"mixins": [
+		"webcam.mixins.json",
+		{
+			"config": "webcam.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"java": ">=21",
+		"fabric": "*",
+		"fabric-api": "*",
+		"minecraft": "~1.21.4"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
