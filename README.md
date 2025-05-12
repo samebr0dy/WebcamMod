@@ -14,4 +14,10 @@ Adds your webcam's feed to your player and displays it in real time. It works gr
 
 This is a server/client mod, so it needs to be installed on both.
 
-![Screenshot of webcam](https://media.forgecdn.net/attachments/description/null/description_80a3c57d-7cbe-4cfe-8133-396c33945a52.png)
+![Screenshot of webcam](https://github.com/user-attachments/assets/9cc82fe8-2d60-43c0-ab34-18856c2a1e51)
+
+
+### 1.0.2 (under review or download here)
+
+You can use the command `/webcam-settings` to open a menu where you can choose the device you want to use: 
+![Screenshot of menu](https://github.com/user-attachments/assets/4084a2b9-6ddc-4538-a8c1-4ac9c2035172)
