@@ -2,9 +2,8 @@ package com.lichcode.webcam.video;
 
 import com.lichcode.webcam.WebcamMod;
 import com.lichcode.webcam.Video.PlayerVideo;
-import com.lichcode.webcam.render.image.RenderableImage;
 import com.github.sarxos.webcam.*;
-import com.github.sarxos.webcam.ds.buildin.WebcamDefaultDevice;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -15,13 +14,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.InvalidMarkException;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class VideoCamara {
-    static Webcam webcam;
+    private static Webcam webcam;
 
     public static void init() {
         for(Webcam wc : Webcam.getWebcams()) {
@@ -40,6 +38,33 @@ public class VideoCamara {
 
     public static void release() {
         webcam.close();
+    }
+
+    public static List<String> getWebcamList() {
+        return Webcam.getWebcams().stream().map((wc) -> wc.getName()).toList();
+    }
+
+    public static void setWebcamByName(String name) {
+        Webcam wc = Webcam.getWebcamByName(name);
+        if (wc == null) {
+            throw new WebcamException("Webcam not found");
+        }
+        webcam.close();
+        try {
+            wc.open();
+        } catch (WebcamException e) {
+            throw e;
+        }
+
+        webcam = wc;
+    }
+
+    public static String getCurrentWebcam() {
+        if (webcam == null) {
+            return null;
+        }
+
+        return webcam.getName();
     }
 
     public static void get(PlayerVideo playerVideo) throws IOException {

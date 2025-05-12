@@ -6,6 +6,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.*;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -24,11 +26,16 @@ public class PlayerFaceRenderer extends FeatureRenderer<PlayerEntityRenderState,
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
-        String playerUUID = MinecraftClient.getInstance().getNetworkHandler()
-                .getPlayerListEntry(state.name)
-                .getProfile()
-                .getId()
-                .toString();
+        ClientPlayNetworkHandler clientPlayNetworkHandler = MinecraftClient.getInstance().getNetworkHandler();
+        if (clientPlayNetworkHandler == null) {
+            return;
+        }
+        PlayerListEntry playerListEntry = clientPlayNetworkHandler.getPlayerListEntry(state.name);
+        if (playerListEntry == null) {
+            return;
+        }
+
+        String playerUUID = playerListEntry.getProfile().getId().toString();
         // Get the renderable image that represents the current video frame
         // if it is null, then we haven't received any video from them so we don't attempt to render
         RenderableImage image = PlayerFeeds.get(playerUUID);

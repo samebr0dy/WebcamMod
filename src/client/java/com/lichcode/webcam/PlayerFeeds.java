@@ -13,6 +13,10 @@ public class PlayerFeeds {
         return images.get(uuid);
     }
 
+    public static PlayerVideo getPlayerVideo(String uuid) {
+        return videos.get(uuid);
+    }
+
     public static void update(PlayerVideo video) {
         videos.put(video.playerUUID, video);
         RenderableImage image = images.getOrDefault(video.playerUUID, new RenderableImage());
