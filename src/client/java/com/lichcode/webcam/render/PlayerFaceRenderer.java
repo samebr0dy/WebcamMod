@@ -91,7 +91,6 @@ public class PlayerFaceRenderer extends FeatureRenderer<PlayerEntityRenderState,
         glEnable(GL_DEPTH_TEST);
         BufferRenderer.drawWithGlobalProgram(buffer.end());
         glUseProgram(0);
-        glDisable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glBindTexture(GL_TEXTURE_2D, 0);
 
