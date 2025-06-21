@@ -13,6 +13,7 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.effect.StatusEffects;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.opengl.GL33.*;
@@ -32,6 +33,10 @@ public class PlayerFaceRenderer extends FeatureRenderer<AbstractClientPlayerEnti
 
         PlayerListEntry playerListEntry = clientPlayNetworkHandler.getPlayerListEntry(entity.getUuid());;
         if (playerListEntry == null) {
+            return;
+        }
+
+        if (entity.hasStatusEffect(StatusEffects.INVISIBILITY)) {
             return;
         }
 
