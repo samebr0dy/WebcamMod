@@ -1,6 +1,6 @@
 # Webcam Mod 
 
-Works for Minecraft version 1.21.4
+Works for Minecraft version 1.20.1
 
 ## Disclamer
 
