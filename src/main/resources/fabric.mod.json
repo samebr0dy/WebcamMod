@@ -2,10 +2,11 @@
 	"schemaVersion": 1,
 	"id": "webcam",
 	"version": "${version}",
-	"name": "Webcam",
-	"description": "Adds webcams to minecraft",
+	"name": "Webcams",
+	"description": "ура вебки нахуй дискорд",
 	"authors": [
-		"Me!"
+		"lichcodes",
+		"br0dy"
 	],
 	"contact": {
 		"homepage": "https://www.youtube.com/@lichcodes"
@@ -30,10 +31,10 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.10",
-		"java": ">=21",
+		"java": ">=17",
 		"fabric": "*",
 		"fabric-api": "*",
-		"minecraft": "~1.21.4"
+		"minecraft": "~1.20.1"
 	},
 	"suggests": {
 		"another-mod": "*"

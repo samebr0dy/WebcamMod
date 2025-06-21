@@ -2,10 +2,13 @@ package com.lichcode.webcam;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,22 +27,25 @@ public class WebcamMod implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
-		PayloadTypeRegistry.playC2S().register(VideoFramePayload.ID, VideoFramePayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(VideoFramePayload.ID, VideoFramePayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(VideoFramePayload.VIDEO_FRAME_PAYLOAD_ID, (server, sender, handler, buf, responseSender) -> {
+            // Only send the video to players within 100 blocks
+            for (ServerPlayerEntity player : PlayerLookup.around(sender.getServerWorld(), sender.getPos(), 100)) {
+                // Do not send the video to the sender, they just sent it to the server duh.
+                if (player.getUuid() == sender.getUuid()) {
+                    continue;
+                }
 
-		ServerPlayNetworking.registerGlobalReceiver(VideoFramePayload.ID, (payload, context) -> {
-			ServerPlayerEntity sender = context.player();
-
-			// Only send the video to players within 100 blocks
-			for (ServerPlayerEntity player : PlayerLookup.around(sender.getServerWorld(), sender.getPos(), 100)) {
-				// Do not send the video to the sender, they just sent it to the server duh.
-				if (player.getUuid() == sender.getUuid()) {
-					continue;
-				}
-
-				// Send image to other players
-				ServerPlayNetworking.send(player, payload);
-			}
+                // Send image to other players
+				PacketByteBuf toSend = PacketByteBufs.copy(buf);
+                ServerPlayNetworking.send(player, VideoFramePayload.VIDEO_FRAME_PAYLOAD_ID, toSend);
+            }
         });
+
+		ServerPlayNetworking.registerGlobalReceiver(DisableCameraPayload.DISABLE_CAMERA_PAYLOAD_ID, ((server, sender, handler, buf, responseSender) -> {
+			for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+				PacketByteBuf toSend = PacketByteBufs.copy(buf);
+				ServerPlayNetworking.send(player, DisableCameraPayload.DISABLE_CAMERA_PAYLOAD_ID, toSend);
+			}
+		}));
 	}
 }
