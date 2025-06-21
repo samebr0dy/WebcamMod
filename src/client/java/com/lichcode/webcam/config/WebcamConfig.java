@@ -16,6 +16,7 @@ public class WebcamConfig {
 
     private static boolean cameraEnabled = true;
     private static String selectedCamera = "";
+    private static float cameraZoom = 1f;
 
     public static void init() {
         properties = new Properties();
@@ -35,6 +36,7 @@ public class WebcamConfig {
     public static void saveConfig() {
         properties.setProperty("camera_enabled", String.valueOf(cameraEnabled));
         properties.setProperty("selected_camera", selectedCamera);
+        properties.setProperty("camera_zoom", String.valueOf(cameraZoom));
 
         try (OutputStream out = Files.newOutputStream(CONFIG_PATH)) {
             properties.store(out, "WebcamMod Configuration");
@@ -47,6 +49,12 @@ public class WebcamConfig {
         String enabledStr = properties.getProperty("camera_enabled");
         cameraEnabled = Boolean.parseBoolean(enabledStr);
         selectedCamera = properties.getProperty("selected_camera", selectedCamera);
+        String zoomStr = properties.getProperty("camera_zoom");
+        if (zoomStr != null) {
+            try {
+                cameraZoom = Float.parseFloat(zoomStr);
+            } catch (NumberFormatException ignored) {}
+        }
     }
 
     public static boolean isCameraEnabled() {
@@ -64,6 +72,15 @@ public class WebcamConfig {
 
     public static void setSelectedCamera(String selectedCamera) {
         WebcamConfig.selectedCamera = selectedCamera;
+        saveConfig();
+    }
+
+    public static float getCameraZoom() {
+        return cameraZoom;
+    }
+
+    public static void setCameraZoom(float zoom) {
+        cameraZoom = zoom;
         saveConfig();
     }
 }

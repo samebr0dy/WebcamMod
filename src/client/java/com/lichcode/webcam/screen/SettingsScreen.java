@@ -57,6 +57,7 @@ public class SettingsScreen extends Screen {
         initCloseButton();
         initWebcamList();
         initCameraEnabled();
+        initZoomSlider();
     }
 
     private void initCloseButton() {
@@ -87,6 +88,13 @@ public class SettingsScreen extends Screen {
         OptionListWidget list = new OptionListWidget(this.client, width, 18, 0, this.height - 32, 25);
         list.addSingleOptionEntry(cameraEnabledOption);
         addDrawableChild(list);
+    }
+
+    private void initZoomSlider() {
+        int sliderWidth = this.width/4;
+        int x = 0;
+        int y = 30 + ELEMENT_HEIGHT + ELEMENT_SPACING;
+        addDrawableChild(new ZoomSlider(x, y, sliderWidth, ELEMENT_HEIGHT));
     }
 
     private void initWebcamList() {
@@ -181,6 +189,26 @@ public class SettingsScreen extends Screen {
             }
         }
         return super.mouseScrolled(mouseX, mouseY, amount);
+    }
+
+    private class ZoomSlider extends net.minecraft.client.gui.widget.SliderWidget {
+        public ZoomSlider(int x, int y, int width, int height) {
+            super(x, y, width, height, Text.of("Zoom"), (WebcamConfig.getCameraZoom() - 1f) / 4f);
+            updateMessage();
+        }
+
+        @Override
+        protected void updateMessage() {
+            int value = (int)Math.round(1 + this.value * 4);
+            setMessage(Text.of("Zoom: " + value + "x"));
+        }
+
+        @Override
+        protected void applyValue() {
+            float zoom = (float)(1 + this.value * 4);
+            WebcamConfig.setCameraZoom(zoom);
+            VideoManager.updateResolution();
+        }
     }
 
     @Environment(EnvType.CLIENT)

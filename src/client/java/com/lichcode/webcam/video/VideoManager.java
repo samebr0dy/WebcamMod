@@ -5,6 +5,7 @@ import com.lichcode.webcam.WebcamMod;
 import com.lichcode.webcam.PlayerFeeds;
 import com.lichcode.webcam.Video.PlayerVideo;
 import com.lichcode.webcam.VideoFramePayload;
+import com.lichcode.webcam.config.WebcamConfig;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -20,7 +21,8 @@ public class VideoManager  {
 
     public static void startCameraLoop() {
         running = true;
-        videoFeed = new PlayerVideo(200, 200, MinecraftClient.getInstance().player.getUuidAsString());
+        int size = (int)(200 * WebcamConfig.getCameraZoom());
+        videoFeed = new PlayerVideo(size, size, MinecraftClient.getInstance().player.getUuidAsString());
         new Thread(() -> {
             VideoCamara.init();
             WebcamMod.LOGGER.info("Camera loop started");
@@ -43,6 +45,7 @@ public class VideoManager  {
 
     public static void loop() {
         try {
+            updateResolution();
             VideoCamara.get(videoFeed);
             if (ClientPlayNetworking.canSend(VideoFramePayload.VIDEO_FRAME_PAYLOAD_ID)) {
                 // Update my own player feed for rendering my own face (when you press F5)
@@ -62,5 +65,13 @@ public class VideoManager  {
 
     public static void stopThread() {
         running = false;
+    }
+
+    public static void updateResolution() {
+        if (videoFeed != null) {
+            int size = (int)(200 * WebcamConfig.getCameraZoom());
+            videoFeed.width = size;
+            videoFeed.height = size;
+        }
     }
 }
